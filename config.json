@@ -1,0 +1,28 @@
+{
+    "api_key": "5vf6PLExjXOALgGcGXspUn8rFAnnm0CnAj30gsS6pBCJFrgJUqIH6TVuBjfUkEqL",
+    "api_secret": "EnzSHnUmcMDPfahMCq3Hc7qAk70oYIGOmduTs2miJsAtficCvEJDxxWzJOuXrrOz",
+    "symbols": [
+        "BTCUSDT",
+        "ETHUSDT",
+        "BNBUSDT",
+        "ADAUSDT",
+        "XRPUSDT",
+        "SOLUSDT",
+        "DOGEUSDT",
+        "DOTUSDT",
+        "LINKUSDT",
+        "LTCUSDT",
+        "BCHUSDT",
+        "AVAXUSDT",
+        "FILUSDT",
+        "XLMUSDT",
+        "TRXUSDT",
+        "NEARUSDT",
+        "ATOMUSDT",
+        "SANDUSDT"
+    ],
+    "timeframes": ["1m", "15m", "1h", "4h"],
+    "trades_file": "D:\\Adnan_project\\TradingBot\\trades.csv",
+    "output_dir": "D:\\Adnan_project\\TradingBot\\reports",
+     "historical_data_file": "D:\\Adnan_project\\TradingBot\\ml_models\\data\\historical_data.csv"
+}

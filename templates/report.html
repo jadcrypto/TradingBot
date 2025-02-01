@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Report: {{ file_name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .archive-link { display: block; margin-top: 10px; color: #007bff; text-decoration: none; }
+        .archive-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Trade Report: {{ file_name }}</h1>
+     {% if symbol_filter != "All" or timeframe_filter != "All" or signal_filter != "All" %}
+        <h2>Filters:</h2>
+        <ul>
+        {% if symbol_filter != "All" %}
+            <li>Symbol: {{ symbol_filter }}</li>
+        {% endif %}
+        {% if timeframe_filter != "All" %}
+             <li>Timeframe: {{ timeframe_filter }}</li>
+        {% endif %}
+         {% if signal_filter != "All" %}
+             <li>Signal: {{ signal_filter }}</li>
+        {% endif %}
+        </ul>
+    {% endif %}
+    {% if trades %}
+        {% for time, trades_at_time in trades %}
+        <h2>Time: {{ time }}</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Symbol</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trade in trades_at_time %}
+                        <tr>
+                            <td>{{ trade.type }}</td>
+                            <td>{{ trade.symbol }}</td>
+                            <td>{{ trade.price }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    {% else %}
+        <p>No trades available in this report.</p>
+    {% endif %}
+</body>
+</html>

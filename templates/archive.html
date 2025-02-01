@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archived Trade Reports</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f4f7fa;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        .button-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .home-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .home-button:hover {
+            background-color: #0056b3;
+        }
+        .filter-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .report-select {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .report-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .report-button:hover {
+            background-color: #218838;
+        }
+        .error {
+            text-align: center;
+            color: red;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Archived Trade Reports</h1>
+    <div class="button-container">
+        <button class="home-button" onclick="window.location.href='/'">Go to Home</button>
+    </div>
+    
+    <div class="filter-container">
+         <select id="symbolSelect" class="report-select">
+            {% for symbol in symbols %}
+               <option value="{{ symbol }}">{{ symbol }}</option>
+            {% endfor %}
+        </select>
+        <select id="timeframeSelect" class="report-select">
+            {% for timeframe in timeframes %}
+               <option value="{{ timeframe }}">{{ timeframe }}</option>
+            {% endfor %}
+        </select>
+        <select id="signalSelect" class="report-select">
+            {% for signal in signals %}
+               <option value="{{ signal }}">{{ signal }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <form id="reportForm">
+        <select id="reportSelect" class="report-select">
+            {% for file in report_files %}
+            <option value="{{ file }}">{{ file }}</option>
+             {% endfor %}
+        </select>
+        <button type="button" id="viewReportButton" class="report-button">View Report</button>
+    </form>
+    <div id="error" class="error"></div>
+
+    <script>
+      document.getElementById("viewReportButton").addEventListener("click", function() {
+            const selectedReport = document.getElementById("reportSelect").value;
+            const symbolFilter = document.getElementById("symbolSelect").value;
+            const timeframeFilter = document.getElementById("timeframeSelect").value;
+            const signalFilter = document.getElementById("signalSelect").value;
+          
+            if(selectedReport) {
+                 let url = `/reports/archive/${selectedReport}?`;
+                  if (symbolFilter && symbolFilter !== "All") {
+                      url += `symbol=${symbolFilter}&`;
+                  }
+                  if (timeframeFilter && timeframeFilter !== "All") {
+                       url += `timeframe=${timeframeFilter}&`;
+                   }
+                  if (signalFilter && signalFilter !== "All") {
+                       url += `signal=${signalFilter}&`;
+                  }
+                window.open(url, "_blank");
+             }else{
+              document.getElementById("error").textContent = "Please select a report to view.";
+            }
+
+        });
+    </script>
+</body>
+</html>

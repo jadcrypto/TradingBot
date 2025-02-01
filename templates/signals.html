@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Signals</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f7fa; }
+        h1 { text-align: center; color: #007bff; }
+        .symbol-container { margin-bottom: 30px; }
+        h2 { color: #333; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 20px;}
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background-color: white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+         th { background-color: #007bff; color: white; }
+         tr:nth-child(even) { background-color: #f9f9f9; }
+         .buy-signal { background-color: #c8f7c5; }
+         .sell-signal { background-color: #f7c5c5; }
+    </style>
+</head>
+<body>
+    <h1>Trading Signals</h1>
+    <div id="signals-container"></div>
+    <script>
+        const ws = new WebSocket("ws://127.0.0.1:8000/ws");
+        const signalsContainer = document.getElementById("signals-container");
+
+        ws.onopen = () => {
+            console.log("WebSocket connection established.");
+        };
+
+         ws.onmessage = (event) => {
+             const response = JSON.parse(event.data);
+            console.log("Received data from the Python server...");
+            signalsContainer.innerHTML = "";
+        
+             if (response.error) {
+                 signalsContainer.innerHTML = `<p style="color:red;">Error: ${response.error}</p>`;
+                 return;
+            }
+        
+        
+            response.results.forEach((item) => {
+                const symbolContainer = document.createElement("div");
+                symbolContainer.classList.add("symbol-container");
+        
+                const symbolHeader = document.createElement("h2");
+                symbolHeader.textContent = item.symbol;
+                symbolContainer.appendChild(symbolHeader);
+
+                item.timeframes.forEach((timeframeData,timeframe) => {
+                    const timeframeTable = document.createElement("table");
+                const thead = document.createElement("thead");
+                const headerRow = document.createElement("tr");
+
+                const headers = ["Timeframe", "Trend Following", "Overbought/Oversold", "Breakout", "Momentum", "Volume", "MACD Crossover","Bollinger MACD RSI"];
+
+                headers.forEach(headerText => {
+                    const th = document.createElement("th");
+                     th.textContent = headerText;
+                        headerRow.appendChild(th);
+                     });
+                thead.appendChild(headerRow);
+                 timeframeTable.appendChild(thead);
+               const tbody = document.createElement("tbody");
+                const row = document.createElement("tr");
+
+                 const timeframeCell = document.createElement("td");
+                    timeframeCell.textContent = timeframe;
+                    row.appendChild(timeframeCell);
+
+                const trendCell = document.createElement("td");
+                     trendCell.textContent = timeframeData.strategies.trend;
+                       if (timeframeData.strategies.trend === "BUY") {
+                             trendCell.classList.add("buy-signal");
+                           } else if (timeframeData.strategies.trend === "SELL") {
+                            trendCell.classList.add("sell-signal");
+                           }
+                        row.appendChild(trendCell);
+            
+                 const overboughtCell = document.createElement("td");
+                      overboughtCell.textContent = timeframeData.strategies.overbought_oversold;
+                     if (timeframeData.strategies.overbought_oversold === "BUY") {
+                             overboughtCell.classList.add("buy-signal");
+                        } else if (timeframeData.strategies.overbought_oversold === "SELL") {
+                               overboughtCell.classList.add("sell-signal");
+                            }
+                     row.appendChild(overboughtCell);
+            
+                const breakoutCell = document.createElement("td");
+                     breakoutCell.textContent = timeframeData.strategies.breakout;
+                     if (timeframeData.strategies.breakout === "BUY") {
+                             breakoutCell.classList.add("buy-signal");
+                     } else if (timeframeData.strategies.breakout === "SELL") {
+                             breakoutCell.classList.add("sell-signal");
+                      }
+                    row.appendChild(breakoutCell);
+
+                 const momentumCell = document.createElement("td");
+                     momentumCell.textContent = timeframeData.strategies.momentum;
+                     if (timeframeData.strategies.momentum === "BUY") {
+                            momentumCell.classList.add("buy-signal");
+                     } else if (timeframeData.strategies.momentum === "SELL") {
+                             momentumCell.classList.add("sell-signal");
+                     }
+                   row.appendChild(momentumCell);
+
+                  const volumeCell = document.createElement("td");
+                    volumeCell.textContent = timeframeData.strategies.volume;
+                   if (timeframeData.strategies.volume === "BUY") {
+                        volumeCell.classList.add("buy-signal");
+                     } else if (timeframeData.strategies.volume === "SELL") {
+                            volumeCell.classList.add("sell-signal");
+                    }
+                      row.appendChild(volumeCell);
+
+                   const macdCell = document.createElement("td");
+                      macdCell.textContent = timeframeData.strategies.macd_crossover;
+                      if (timeframeData.strategies.macd_crossover === "BUY") {
+                            macdCell.classList.add("buy-signal");
+                       } else if (timeframeData.strategies.macd_crossover === "SELL") {
+                           macdCell.classList.add("sell-signal");
+                      }
+                       row.appendChild(macdCell);
+            
+                   const bollingerMacdRSICell = document.createElement("td");
+                      bollingerMacdRSICell.textContent = timeframeData.strategies.bollinger_macd_rsi;
+                     if (timeframeData.strategies.bollinger_macd_rsi === "BUY") {
+                            bollingerMacdRSICell.classList.add("buy-signal");
+                      } else if (timeframeData.strategies.bollinger_macd_rsi === "SELL") {
+                           bollingerMacdRSICell.classList.add("sell-signal");
+                       }
+                   row.appendChild(bollingerMacdRSICell);
+
+                 tbody.appendChild(row);
+                 timeframeTable.appendChild(tbody);
+                 symbolContainer.appendChild(timeframeTable)
+                });
+                 signalsContainer.appendChild(symbolContainer);
+            });
+              console.log("Data displayed in the HTML page.");
+        };
+
+        ws.onclose = () => {
+           console.error("WebSocket connection closed.");
+             signalsContainer.innerHTML = "<p>Connection closed. Please refresh the page.</p>";
+         };
+
+        ws.onerror = (error) => {
+            console.error("WebSocket error:", error);
+            signalsContainer.innerHTML = "<p>An error occurred with the WebSocket connection.</p>";
+        };
+    </script>
+</body>
+</html>
